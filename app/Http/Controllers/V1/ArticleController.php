@@ -50,4 +50,8 @@ class ArticleController extends Controller
         $article->delete();
         return response()->json(null, StatusCode::HTTP_NO_CONTENT);
     }
+
+    public function getUserEmail(Article $article){
+      return $article->user->email;
+    }
 }
