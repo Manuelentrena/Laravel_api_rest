@@ -8,6 +8,7 @@ use App\Http\Controllers\V1\UserController;
 Route::group(['prefix' => 'v1','middleware' => ['jwt.verify']], function() {
     Route::apiResource('articles', ArticleController::class, ['as' => 'v1'])->except(['index']);
     Route::get('user', [UserController::class, 'getAuthenticatedUser'])->name('v1.getAuthenticatedUser');
+    Route::get('user_email/{article}', [ArticleController::class, 'getUserEmail'])->name('v1.getUserEmail');
 });
 
 Route::prefix('v1')->group(function () {
