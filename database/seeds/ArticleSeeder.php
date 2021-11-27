@@ -1,7 +1,9 @@
 <?php
 
 use App\Http\Models\Article;
+use App\Http\Models\User;
 use Illuminate\Database\Seeder;
+use Tymon\JWTAuth\Facades\JWTAuth;
 
 class ArticleSeeder extends Seeder
 {
@@ -9,7 +11,14 @@ class ArticleSeeder extends Seeder
     {
       //Borra los datos
       Article::truncate();
-      //Crea 20 nuevos randon
-      factory(Article::class, 50)->create();
+      //Obtenemos a los usuarios
+      $users = User::all();
+      foreach($users as $user) {
+        JWTAuth::attempt(['email' => $user->email, 'password' => 'password']);
+        $num_articles = 5;
+        factory(Article::class, $num_articles)->create();
+      }
+      
+      
     }
 }
