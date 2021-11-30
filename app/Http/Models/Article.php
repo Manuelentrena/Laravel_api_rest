@@ -24,4 +24,8 @@ class Article extends Model
     public function user(){
       return $this->belongsTo('App\Http\Models\User');
     }
+
+    public function category(){
+      return $this->belongsTo('App\Http\Models\Category');
+    }
 }

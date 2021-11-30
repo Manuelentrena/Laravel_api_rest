@@ -4,6 +4,8 @@ namespace App\Http\Controllers\V1;
 
 use App\Http\Controllers\Controller;
 use App\Http\Models\Article;
+use App\Http\Resources\Article as ArticleResource;
+use App\Http\Resources\ArticleCollection;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response as StatusCode;
 use Illuminate\Http\Response;
@@ -13,7 +15,7 @@ class ArticleController extends Controller
     
     public function index()
     {
-        return Article::all();
+        return new ArticleCollection(Article::paginate());
     }
 
     
@@ -26,7 +28,7 @@ class ArticleController extends Controller
     
     public function show(Article $article)
     {
-        return $article;
+        return response()->json(new ArticleResource($article), StatusCode::HTTP_OK);
     }
 
     
