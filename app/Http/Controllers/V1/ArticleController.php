@@ -9,10 +9,22 @@ use App\Http\Resources\ArticleCollection;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response as StatusCode;
 use Illuminate\Http\Response;
+use Illuminate\Support\Facades\Validator;
 
 class ArticleController extends Controller
 {
-    
+    private static $rules = [
+      'title' => 'required|string|unique:articles|max:255',
+      'body' => 'required',
+    ];
+
+    private static $messages = [
+      'required' => 'El campo :attribute es obligatorio',
+      'string' => 'El campo :attribute debe ser string',
+      'unique' => 'El campo :attribute debe ser único',
+      'max' => 'Longitud máxima de :attribute superada',
+    ];
+
     public function index()
     {
         return new ArticleCollection(Article::paginate());
@@ -21,7 +33,25 @@ class ArticleController extends Controller
     
     public function store(Request $request)
     {
-        $article = Article::create($request->all());
+        // METHOD 1
+
+        /* $validatedData = Validator::make($request->all(),[
+          'title' => 'required|string|unique:articles|max:255',
+          'body' => 'required',
+        ]);
+
+        if($validatedData->fails()){
+          return response()->json([
+            'error' => 'datos inválidos', 
+            'msg' => $validatedData->errors()
+          ],
+          StatusCode::HTTP_BAD_REQUEST);
+        } */
+
+        // METHOD 2
+        $validatedData = $request->validate(self::$rules, self::$messages);
+
+        $article = Article::create($validatedData);
         return response()->json($article, StatusCode::HTTP_CREATED);
     }
 
