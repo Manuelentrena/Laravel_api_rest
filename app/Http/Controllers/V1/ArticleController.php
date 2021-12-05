@@ -13,16 +13,27 @@ use Illuminate\Support\Facades\Validator;
 
 class ArticleController extends Controller
 {
-    private static $rules = [
+    private static $rulesStore = [
       'title' => 'required|string|unique:articles|max:255',
       'body' => 'required',
+      'category_id' => 'exists:categories,id',
     ];
+
+    private function rulesUpdate($article_id){
+      // Ignoramos el title, ya que unique da problemas al actualizar
+      return [
+        'title' => 'required|string|unique:articles,title,'.$article_id.'|max:255',
+        'body' => 'required',
+        'category_id' => 'exists:categories,id',
+      ];
+    }
 
     private static $messages = [
       'required' => 'El campo :attribute es obligatorio',
       'string' => 'El campo :attribute debe ser string',
       'unique' => 'El campo :attribute debe ser único',
       'max' => 'Longitud máxima de :attribute superada',
+      'category_id.exists' => 'No existe la category ID',
     ];
 
     public function index()
@@ -49,8 +60,7 @@ class ArticleController extends Controller
         } */
 
         // METHOD 2
-        $validatedData = $request->validate(self::$rules, self::$messages);
-
+        $validatedData = $request->validate(self::$rulesStore, self::$messages);
         $article = Article::create($validatedData);
         return response()->json($article, StatusCode::HTTP_CREATED);
     }
@@ -64,8 +74,9 @@ class ArticleController extends Controller
     
     public function update(Request $request, Article $article)
     {
-        $article->update($request->all());
-        return response()->json($article, StatusCode::HTTP_OK);
+      $validatedData = $request->validate($this->rulesUpdate($article->id), self::$messages);
+      $article->update($validatedData);
+      return response()->json($article, StatusCode::HTTP_OK);
     }
 
     
