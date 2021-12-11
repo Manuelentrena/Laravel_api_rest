@@ -15,6 +15,7 @@ Route::group(['prefix' => 'v1','middleware' => ['jwt.verify']], function() {
   Route::get('user_email/{article}', [ArticleController::class, 'getUserEmail'])->name('v1.getUserEmail');
   // Article
   Route::apiResource('articles', ArticleController::class, ['as' => 'v1'])->except(['index']);
+  Route::get('articles/{article}/image', [ArticleController::class, 'image'])->name('v1.article.image');
   // Comments
   Route::get('articles/{article}/comments', [CommentController::class, 'index'])->name('v1.comments.index');
   Route::get('articles/{article}/comments/{id}', [CommentController::class, 'show'])->name('v1.comments.show');

@@ -15,7 +15,7 @@ class Article extends Model
       });
     }
 
-    protected $fillable = ['title','body','category_id'];
+    protected $fillable = ['title','body','category_id','image'];
     
     public function comments(){
       return $this->hasMany('App\Http\Models\Comment');

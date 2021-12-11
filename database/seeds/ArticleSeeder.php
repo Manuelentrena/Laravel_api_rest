@@ -4,6 +4,7 @@ use App\Http\Models\Article;
 use App\Http\Models\User;
 use Illuminate\Database\Seeder;
 use Tymon\JWTAuth\Facades\JWTAuth;
+use Illuminate\Support\Facades\Storage;
 
 class ArticleSeeder extends Seeder
 {
@@ -11,6 +12,9 @@ class ArticleSeeder extends Seeder
     {
       //Borra los datos
       Article::truncate();
+      //Creamos carpeta para las imgs del articulo
+      Storage::deleteDirectory('public/articles');
+      Storage::makeDirectory('public/articles');
       //Obtenemos a los usuarios
       $users = User::all();
       foreach($users as $user) {
