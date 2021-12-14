@@ -45,32 +45,32 @@ class ArticleController extends Controller
 
     public function store(Request $request)
     {
-        // METHOD 1
+      // METHOD 1
 
-        /* $validatedData = Validator::make($request->all(),[
-          'title' => 'required|string|unique:articles|max:255',
-          'body' => 'required',
-        ]);
+      /* $validatedData = Validator::make($request->all(),[
+        'title' => 'required|string|unique:articles|max:255',
+        'body' => 'required',
+      ]);
 
-        if($validatedData->fails()){
-          return response()->json([
-            'error' => 'datos inválidos', 
-            'msg' => $validatedData->errors()
-          ],
-          StatusCode::HTTP_BAD_REQUEST);
-        } */
+      if($validatedData->fails()){
+        return response()->json([
+          'error' => 'datos inválidos', 
+          'msg' => $validatedData->errors()
+        ],
+        StatusCode::HTTP_BAD_REQUEST);
+      } */
 
-        // METHOD 2
-        $validatedData = $request->validate(self::$rulesStore, self::$messages);
-        $article = new Article($validatedData);
-        // Add image
-        $path = $article->image->store('public/articles'); 
-          //Save file in cd storage/public how idUser_title.extension
-          //->storeAs('public/articles',  $validatedData->user()->id. '_' . $article->title . '.' .$validatedData->image->extension()); 
-        $article->image = $path;
-        $article->save();
+      // METHOD 2
+      $validatedData = $request->validate(self::$rulesStore, self::$messages);
+      $article = new Article($validatedData);
+      // Add image
+      $path = $article->image->store('public/articles'); 
+        //Save file in cd storage/public how idUser_title.extension
+        //->storeAs('public/articles',  $validatedData->user()->id. '_' . $article->title . '.' .$validatedData->image->extension()); 
+      $article->image = $path;
+      $article->save();
 
-        return response()->json(new ArticleResource($article), StatusCode::HTTP_CREATED);
+      return response()->json(new ArticleResource($article), StatusCode::HTTP_CREATED);
     }
 
     public function show(Article $article)
@@ -85,6 +85,7 @@ class ArticleController extends Controller
 
     public function update(Request $request, Article $article)
     {
+      $this->authorize('update',$article);
       $validatedData = $request->validate($this->rulesUpdate($article->id), self::$messages);
       $article->update($validatedData);
       return response()->json($article, StatusCode::HTTP_OK);
@@ -92,16 +93,9 @@ class ArticleController extends Controller
 
     public function destroy(Article $article)
     {
-        /* if($article->delete()){
-          return response([
-            'data' => [
-              'status' => StatusCode::HTTP_NO_CONTENT,
-              'message' => 'post borrado',
-            ]
-          ]);
-        } */
-        $article->delete();
-        return response()->json(null, StatusCode::HTTP_NO_CONTENT);
+      $this->authorize('delete',$article);
+      $article->delete();
+      return response()->json(null, StatusCode::HTTP_NO_CONTENT);
     }
 
     public function getUserEmail(Article $article){
