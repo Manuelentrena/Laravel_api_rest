@@ -40,7 +40,7 @@ class ArticleController extends Controller
 
     public function index()
     {
-        return new ArticleCollection(Article::paginate());
+      return new ArticleCollection(Article::paginate());
     }
 
     public function store(Request $request)
@@ -61,6 +61,7 @@ class ArticleController extends Controller
       } */
 
       // METHOD 2
+      $this->authorize('create', Article::class);
       $validatedData = $request->validate(self::$rulesStore, self::$messages);
       $article = new Article($validatedData);
       // Add image
@@ -75,6 +76,7 @@ class ArticleController extends Controller
 
     public function show(Article $article)
     {
+      $this->authorize('view', $article);
       return response()->json(new ArticleResource($article), StatusCode::HTTP_OK);
     }
 
