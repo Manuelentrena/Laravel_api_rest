@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\Validator;
 use JWTAuth;
 use Tymon\JWTAuth\Exceptions\JWTException;
 use Symfony\Component\HttpFoundation\Response as StatusCode;
+use App\Http\Resources\User as UserResource;
 
 class UserController extends Controller
 {
@@ -58,7 +59,7 @@ class UserController extends Controller
         } catch (Tymon\JWTAuth\Exceptions\JWTException $e) {
             return response()->json(['token_absent'], $e->getStatusCode());
         }
-        return response()->json(compact('user'));
+        return response()->json(new UserResource($user), StatusCode::HTTP_OK);
     }
     
 }
