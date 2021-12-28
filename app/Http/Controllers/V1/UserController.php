@@ -4,6 +4,7 @@ namespace App\Http\Controllers\V1;
 
 use App\Http\Controllers\Controller;
 use App\Http\Models\User;
+use App\Http\Models\Writer;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
@@ -33,17 +34,29 @@ class UserController extends Controller
             'name' => 'required|string|max:255',
             'email' => 'required|string|email|max:255|unique:users',
             'password' => 'required|string|min:6|confirmed',
+            'editorial' => 'required|string',
+            'short_bio' => 'required|string',
         ]);
+
         if($validator->fails()){
             return response()->json($validator->errors()->toJson(), StatusCode::HTTP_BAD_REQUEST);
         }
-        $user = User::create([
+
+        $writer = Writer::create([
+          'editorial' => $request->get('editorial'),
+          'short_bio' => $request->get('short_bio'),
+        ]);
+
+        $writer->user()->create([
             'name' => $request->get('name'),
             'email' => $request->get('email'),
             'password' => Hash::make($request->get('password')),
         ]);
-        $token = JWTAuth::fromUser($user);
-        return response()->json(compact('user','token'),StatusCode::HTTP_CREATED);
+
+        $user = $writer->user;
+
+        $token = JWTAuth::fromUser($writer->user);
+        return response()->json(new UserResource($user, $token),StatusCode::HTTP_CREATED);
     }
 
     public function getAuthenticatedUser()
