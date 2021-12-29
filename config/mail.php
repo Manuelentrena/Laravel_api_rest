@@ -15,6 +15,15 @@ return [
 
     'default' => env('MAIL_MAILER', 'smtp'),
 
+    'driver' => 'mailgun',
+    'host' => 'smtp.mailgun.org',
+    'port' => 587,
+    'encryption' => 'tls',
+    'username' => null,
+    'password' => null,
+    'sendmail' => '/usr/sbin/sendmail -bs',
+    'pretend' => false,
+
     /*
     |--------------------------------------------------------------------------
     | Mailer Configurations
@@ -76,6 +85,11 @@ return [
     'from' => [
         'address' => env('MAIL_FROM_ADDRESS', 'hello@example.com'),
         'name' => env('MAIL_FROM_NAME', 'Example'),
+    ],
+
+    'to' => [
+      'address' => 'manuel.entrena@gmail.com',
+      'name' => 'Manuel Entrena'
     ],
 
     /*

@@ -39,18 +39,6 @@ class UserSeeder extends Seeder
           )
         );
       }
-      // factory(User::class, 20)->create();
-      // foreach(User::all() as $user) {
-      //   $user->categories()->saveMany(
-      //     $faker->randomElements(
-      //       array(
-      //         Category::find(1),
-      //         Category::find(2),
-      //         Category::find(3),
-      //       ), $faker->numberBetween(1,3),false
-      //     )
-      //   );
-      // }
         
     }
 }

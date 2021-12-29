@@ -8,6 +8,8 @@ use App\Http\Models\Article;
 use Illuminate\Http\Request;
 use App\Http\Resources\Comment as CommentResource;
 use Symfony\Component\HttpFoundation\Response as StatusCode;
+use Illuminate\Support\Facades\Mail;
+use App\Mail\NewComment;
 
 class CommentController extends Controller
 {
@@ -30,6 +32,15 @@ class CommentController extends Controller
     {
       $validatedComment = $request->validate(self::$rules, self::$messages);
       $newComment = $article->comments()->save(new Comment($validatedComment));
+
+      // Send Email to Author
+      Mail::to($article->user)
+      //->cc("New Comment in your Article")
+      //->bcc($evenMoreUsers)
+      ->send(new NewComment($newComment));
+
+
+
       return response()->json(new CommentResource($newComment), StatusCode::HTTP_CREATED);
     }
 
